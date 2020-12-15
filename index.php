@@ -113,19 +113,13 @@ use PHPZxing\PHPZxingDecoder;
             document.getElementById('canvas-file-'+i).value = canvas.toDataURL();
             ++i;
             
-
             var cvClass = document.getElementsByClassName("canvas-contain");
             cvClass.forEach(element => {
                 console.log(element);
             });
-
-
         });
-
         
-
         
-
         var dragged;
         document.addEventListener("dragstart", function(event){
             console.log("dragstart");
@@ -194,39 +188,3 @@ use PHPZxing\PHPZxingDecoder;
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-<?php
-
-
-
-exit;
-
-
-$config = array(
-    'try_harder'            => true,
-    'multiple_bar_codes' => true
-);
-
-$decoder = new PHPZxingDecoder($config);
-$decoder->setJavaPath("D:\DEVELOPMENT\jdk8u275-full\bin\java.exe");
-$data = $decoder->decode('test63001740.png');
-// $data    = $decoder->decode('hn470023097.JPG');
-echo "<pre>";
-print_r($data);
-echo "</pre>";
-
-if($data instanceof PHPZxing\ZxingImage) {
-    echo $data->getImageValue();
-    echo $data->getFormat();
-    echo $data->getType();
-}
-
-
-
-
