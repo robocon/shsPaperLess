@@ -1,0 +1,6 @@
+# Experimenting on Docker
+docker
+docker-compose.yml
+composer.phar
+/vendor/
+/tmp/
