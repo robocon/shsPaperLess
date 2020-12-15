@@ -1,9 +1,7 @@
 <?php
 require __DIR__ . "/vendor/autoload.php";
 use PHPZxing\PHPZxingDecoder;
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +38,10 @@ use PHPZxing\PHPZxingDecoder;
             HN : <input type="text" name="hn" id=""> 
         </div>
         <div>
-            วันที่ทำการรักษา : <input type="date" name="dateSelect" id="">
+            <?php 
+            $exDate = date('Y-m-d');
+            ?>
+            วันที่ทำการรักษา : <input type="date" name="dateTreatment" id="" value="<?=$exDate;?>">
         </div>
         <div id="canvasContent" style="background-color:purple"></div>
         <div>

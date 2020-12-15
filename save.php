@@ -1,8 +1,37 @@
 <?php 
 require __DIR__ . "/vendor/autoload.php";
+include "connection.php";
+include "fpdf182/fpdf.php";
+
 use PHPZxing\PHPZxingDecoder;
 
-include "fpdf182/fpdf.php";
+$hn = $_POST['hn'];
+$dateTM = $_POST['dateTreatment'];
+
+$hn = filter_input(INPUT_POST, 'hn', FILTER_SANITIZE_STRING);
+$dateTM = filter_input(INPUT_POST, 'dateTreatment', FILTER_SANITIZE_STRING);
+
+if ( empty($hn) || empty($dateTM) )
+{
+    echo "กรุณากรอกข้อมูล HN และ วันที่ทำการรักษา ให้ครบ";
+    exit;
+}
+
+/**
+ * @todo
+ * [x] create folder hn
+ * [x] create subfolder date 
+ */
+if (!file_exists("filePdf/$hn")) { 
+    mkdir("fileImage/$hn");
+    mkdir("filePdf/$hn");
+}
+
+$defaultTmPath = "filePdf/$hn/$dateTM";
+if (!file_exists($defaultTmPath)) { 
+    mkdir("fileImage/$hn/$dateTM");
+    mkdir($defaultTmPath);
+}
 
 class PDF extends FPDF
 {
@@ -18,29 +47,13 @@ class PDF extends FPDF
     }
 }
 
-function dump($txt)
-{
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
-
-function generateRandomString($length = 10)
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++)
-    {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
 // เก็บไฟล์ไว้ใน temp ก่อน
-$fileList = array();
 $fileJpeg = array();
-$pdf = new PDF("L","mm","A4");
+$jpegTemp = array();
+
+
+
+$tempPath = "tmp/";
 
 foreach ($_REQUEST['canvasValue'] as $key => $value)
 {
@@ -49,77 +62,62 @@ foreach ($_REQUEST['canvasValue'] as $key => $value)
     $pureData = base64_decode($pureData);
     $name = generateRandomString();
 
-    // $fileList[] = "tmp/$name.png";
-    // file_put_contents("tmp/$name.png", $pureData);
-
-
-    $fileJpeg[] = $jpegName = "tmp/$name.jpeg";
+    // ลดคุณภาพไฟล์เพือ่ประหยัดเนื้อที่
+    $fileJpeg[] = $jpegName = "$name.jpeg";
     $im = imagecreatefromstring($pureData);
-    imagejpeg($im, "tmp/$name.jpeg",80);
 
-    $pdf->AliasNbPages();
-    $pdf->AddPage();
+    $jpegTemp[] = $tmp = $tempPath.$jpegName;
     
-    // Insert a logo in the top-left corner at 300 dpi
-    // $pdf->Image($jpegName,0,0 ,-96);
-
-    $pdf->Image($jpegName,0,0,297,210,"JPEG");
-
+    imagejpeg($im, $tmp, 80);
 }
 
-$pdfName = generateRandomString();
-
-$pdf->Output("F", "tmp/$pdfName.pdf");
-
 // อ่านบาร์โค้ดออกมา
-$config = array(
-    'try_harder' => true,
-    'multiple_bar_codes' => true
-);
 $decoder = new PHPZxingDecoder();
-$decoder->setJavaPath("D:/DEVELOPMENT/jdk8u275-full/bin/java.exe");
-$decodedArray = $decoder->decode($fileJpeg);
+$decoder->setJavaPath($javaFullPath);
+$decodedArray = $decoder->decode($jpegTemp);
 if( is_array($decodedArray) )
 {
     foreach ($decodedArray as $data) 
     {
         if($data instanceof PHPZxing\ZxingImage) 
         {
-            dump($data->getImageValue());
-        } 
-        // else 
-        // {
-        //     echo "Bar Code cannot be read<br>";
-        // }
+            $hn = $data->getImageValue();
+        }
     }
 }
 else
 {
     if($decodedArray instanceof PHPZxing\ZxingImage) 
     {
-        dump($decodedArray->getImageValue());
+        $hn = $data->getImageValue();
     } 
-    // else 
-    // {
-    //     echo "Bar Code cannot be read<br>";
-    // }
 }
 
-
-/**
- * @todo
- * [] ลดคุณภาพของรูปลงก่อนบันทึกเข้าไปในฐานข้อมูลเพื่อลดขนาดไฟล์
- * [] รวมรูปเป็นไฟล์ pdf 
- */
-// foreach ($fileList as $file) {
-//     unlink($file);
-// }
-
-
-// อ่านเสร็จลบไฟล์
+$pdf = new PDF("L","mm","A4");
 foreach ($fileJpeg as $file)
 {
-    // unlink($file);
+    $pdf->AliasNbPages();
+    $pdf->AddPage();
+    
+    // Insert a logo in the top-left corner at 300 dpi
+    // $pdf->Image($jpegName,0,0 ,-96);
+
+    $pdf->Image("tmp/".$file, 0, 0, 297, 210, "JPEG");
+
+    copy("tmp/".$file, "fileImage/$hn/$dateTM/$file");
+
+    // unlink("tmp/".$file);
 }
+$pdfName = generateRandomString();
+$pdfPathFile = "$defaultTmPath/$pdfName.pdf";
+$pdf->Output("F", $pdfPathFile);
+
+$sql = "INSERT INTO `pdfs` (`id`, `dateSave`, `dateTM`, `file`, `creator`, `lastSave`, `editor`) VALUES ( NULL, NOW(), ?, ?, '', NOW(), '' );";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("ss", $v1, $v2);
+$v1 = $dateTM;
+$v2 = $pdfPathFile;
+$stmt->execute();
+$stmt->close();
 
 exit;

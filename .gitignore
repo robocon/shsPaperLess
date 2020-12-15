@@ -4,3 +4,6 @@ docker-compose.yml
 composer.phar
 /vendor/
 /tmp/
+/fileImage/
+/filePdf/
+connection.php
