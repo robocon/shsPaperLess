@@ -94,6 +94,7 @@ else
 }
 
 $pdf = new PDF("L","mm","A4");
+$backupJpeg = array();
 foreach ($fileJpeg as $file)
 {
     $pdf->AliasNbPages();
@@ -102,11 +103,15 @@ foreach ($fileJpeg as $file)
     // Insert a logo in the top-left corner at 300 dpi
     // $pdf->Image($jpegName,0,0 ,-96);
 
+    // เพิ่มรูปเข้าไปใน pdf
     $pdf->Image("tmp/".$file, 0, 0, 297, 210, "JPEG");
 
-    copy("tmp/".$file, "fileImage/$hn/$dateTM/$file");
+    $backupJpeg[] = $jpegImage = "fileImage/$hn/$dateTM/$file";
 
-    // unlink("tmp/".$file);
+    // ก็อปรูปไปไว้ใน folder ทำเป็น backup ไว้ก่อน
+    if (copy("tmp/".$file, $jpegImage) === true) { 
+        unlink("tmp/".$file);
+    } 
 }
 $pdfName = generateRandomString();
 $pdfPathFile = "$defaultTmPath/$pdfName.pdf";
@@ -118,6 +123,20 @@ $stmt->bind_param("ss", $v1, $v2);
 $v1 = $dateTM;
 $v2 = $pdfPathFile;
 $stmt->execute();
+$last_id = $mysqli->insert_id;
 $stmt->close();
+
+foreach ($backupJpeg as $key => $jpeg) {
+    $sql = "INSERT INTO `images` (`id`, `file`, `pdfId`) VALUES (NULL, ?, ?);";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("si", $v3, $v4);
+    $v3 = $jpeg;
+    $v4 = $last_id;
+    $stmt->execute();
+    $stmt->close();
+}
+
+$_SESSION['notiMessage'] = "บันทึกข้อมูลเรียบร้อย";
+header('Location: index.php');
 
 exit;

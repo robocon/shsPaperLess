@@ -1,6 +1,12 @@
 <?php
 require __DIR__ . "/vendor/autoload.php";
-use PHPZxing\PHPZxingDecoder;
+use PHPZxing\PHPZxingDecoder; 
+
+/**
+ * เหลืออะไรบ้าง ??
+ * [] หน้าแสดงรายการไฟล์ที่อัพโหลด
+ * [] หน้าของแพทย์ที่ดึงข้อมูลไปใช้งาน
+ */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +33,15 @@ use PHPZxing\PHPZxingDecoder;
             cursor: pointer;
         }
     </style>
+
+    <?php 
+    if ($_SESSION['notiMessage']) {
+        ?>
+        <div style="background-color: red;"><?=$_SESSION['notiMessage'];?></div>
+        <?php
+    }
+    ?>
+
     <video id="video" style="width:640px; height:480px;" autoplay></video>
 
     <div>
