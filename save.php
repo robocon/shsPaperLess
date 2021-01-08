@@ -17,11 +17,6 @@ if ( empty($hn) || empty($dateTM) )
     exit;
 }
 
-/**
- * @todo
- * [x] create folder hn
- * [x] create subfolder date 
- */
 if (!file_exists("filePdf/$hn")) { 
     mkdir("fileImage/$hn");
     mkdir("filePdf/$hn");
@@ -89,7 +84,7 @@ else
 {
     if($decodedArray instanceof PHPZxing\ZxingImage) 
     {
-        $hn = $data->getImageValue();
+        $hn = $decodedArray->getImageValue();
     } 
 }
 

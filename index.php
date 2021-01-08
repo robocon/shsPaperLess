@@ -1,7 +1,4 @@
 <?php
-require __DIR__ . "/vendor/autoload.php";
-use PHPZxing\PHPZxingDecoder; 
-
 /**
  * เหลืออะไรบ้าง ??
  * [] หน้าแสดงรายการไฟล์ที่อัพโหลด
@@ -11,60 +8,144 @@ use PHPZxing\PHPZxingDecoder;
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Bootstrap 4 Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 5rem;
+        }
+    </style>
 </head>
 <body>
     <style>
-        .canvas-contain{
-            position: relative;
-            display: inline-block;
-        }
-        .canvasCloseBtn{
-            /* position: absolute; */
-            float: right;
-            top: 0;
-            right: 0;
-            padding: 3px;
-            background-color: gray;
-        }
-        .canvasCloseBtn:hover{
-            cursor: pointer;
-        }
+    .canvas-contain{
+        position: relative;
+        display: inline-block;
+    }
+    .canvasCloseBtn{
+        /* position: absolute; */
+        float: right;
+        top: 0;
+        right: 0;
+        padding: 3px;
+        background-color: gray;
+    }
+    .canvasCloseBtn:hover{
+        cursor: pointer;
+    }
     </style>
 
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">ระบบ Scan เอกสาร</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<div class="container-fluid pt-3">
+    
     <?php 
-    if ($_SESSION['notiMessage']) {
+    if ($_SESSION['notiMessage'])
+    {
         ?>
-        <div style="background-color: red;"><?=$_SESSION['notiMessage'];?></div>
+        <div class="row">
+            <div class="col">
+                <div style="background-color: red;"><?=$_SESSION['notiMessage'];?></div>
+            </div>
+        </div>
         <?php
     }
     ?>
 
-    <video id="video" style="width:640px; height:480px;" autoplay></video>
+    <div class="row">
+        <div class="col">
 
-    <div>
-        <button id="snap">ถ่ายรูป</button>
+            <div class="row">
+                <div class="col">
+                    <video id="video" style="width:800px; height:480px;" autoplay></video>
+                </div>
+                <div class="col">
+                    <button id="snap" type="button" class="btn btn-primary btn-block">ถ่ายรูป</button>
+                </div>
+            </div>
+
+            <form action="save.php" method="post" enctype="multipart/form-data">
+
+                <div class="form-group">
+                    <label for="hn">HN:</label>
+                    <input type="text" class="form-control" name="hn" id="hn"> 
+                </div>
+
+                <div class="form-group">
+                    <label for="dateTreatment">วันที่ทำการรักษา:</label>
+                    <?php 
+                    $exDate = date('Y-m-d');
+                    ?>
+                    <input type="date" class="form-control" name="dateTreatment" id="dateTreatment" value="<?=$exDate;?>">
+                </div>
+
+                <div class="form-group">
+                    <div id="canvasContent" style="background-color:purple"></div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">บันทึกข้อมูล</button>
+                </div>
+            </form>
+
+        </div>
     </div>
 
-    <form action="save.php" method="post" enctype="multipart/form-data">
-        <div>
-            HN : <input type="text" name="hn" id=""> 
-        </div>
-        <div>
-            <?php 
-            $exDate = date('Y-m-d');
-            ?>
-            วันที่ทำการรักษา : <input type="date" name="dateTreatment" id="" value="<?=$exDate;?>">
-        </div>
-        <div id="canvasContent" style="background-color:purple"></div>
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-        </div>
-    </form>
+</div>
 
     <script>
+        var SmHttp = function(){}
+        SmHttp.prototype = {
+            ajax: function(url, data, callback){
+                try{
+                    xHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                }catch(e){
+                    try{
+                        xHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch(e){
+                        xHttp = false;
+                    }
+                }
+                if(!xHttp && document.createElement){
+                    xHttp = new XMLHttpRequest();
+                }
+                
+                xHttp.onreadystatechange = function(){
+                    if( xHttp.readyState == 4 && xHttp.status == 200 ){
+                        callback(xHttp.responseText);
+                    }
+                };
+                xHttp.open("POST", url, true);
+                xHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                data = this.objToStr(data);
+                xHttp.send(data);
+            },
+            objToStr: function(data){
+                
+                if( data === null ){
+                    return null;
+                }
+                
+                test_str = [];
+                for(var p in data){
+                    test_str.push(encodeURIComponent(p)+"="+encodeURIComponent(data[p]));
+                }
+                return test_str.join("&");
+            }
+        }
+
         var video = document.getElementById('video');
         // 720p
         var videoWidth = 1280;
@@ -121,18 +202,38 @@ use PHPZxing\PHPZxingDecoder;
             canvas.height = videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0, videoWidth, videoHeight);
             
+            var dataURL = canvas.toDataURL();
+
             var img = document.getElementById('canvas-img-'+i);
             img.width = "320";
             img.height = "200";
-            img.src = canvas.toDataURL();
+            img.src = dataURL;
 
-            document.getElementById('canvas-file-'+i).value = canvas.toDataURL();
+
+            document.getElementById('canvas-file-'+i).value = dataURL;
             ++i;
             
-            var cvClass = document.getElementsByClassName("canvas-contain");
-            cvClass.forEach(element => {
-                console.log(element);
-            });
+            // var cvClass = document.getElementsByClassName("canvas-contain");
+            // cvClass.forEach(element => {
+            //     // console.log(element);
+            // });
+
+            var newSm = new SmHttp();
+            newSm.ajax(
+                "findHn.php",
+                {"dataIMG" : dataURL},
+                function(responseText){
+                    
+                    var data = JSON.parse(responseText);
+                    console.log(data);
+
+                    if(data.resStatus === true)
+                    {
+                        document.getElementById('hn').value = data.hn;
+                    }
+                }
+            );
+
         });
         
         
@@ -142,6 +243,7 @@ use PHPZxing\PHPZxingDecoder;
             dragged = event.target;
             event.target.style.opacity = .5;
         });
+
         document.addEventListener("drop", function(event){
             console.log("drop");
             
@@ -165,6 +267,10 @@ use PHPZxing\PHPZxingDecoder;
             console.log("dragend");
             event.target.style.opacity = "";
         }, false);
+
+
+        
+
 
 
         function rotate(rotateTo)
