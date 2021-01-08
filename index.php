@@ -12,9 +12,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
     <style>
         body {
             padding-top: 5rem;
@@ -29,14 +31,24 @@
     }
     .canvasCloseBtn{
         /* position: absolute; */
-        float: right;
-        top: 0;
-        right: 0;
+        /* float: right; */
+        /* top: 0; */
+        /* right: 0; */
         padding: 3px;
         background-color: gray;
+        text-align: center;
     }
     .canvasCloseBtn:hover{
         cursor: pointer;
+    }
+
+    .panel-placeholder {
+        border: 1px dotted black;
+        border-radius: 4px;
+        margin: 0 15px 20px 15px;
+        padding: 0;
+        height: 230px;
+        width: 320px;
     }
     </style>
 
@@ -225,7 +237,7 @@
                 function(responseText){
                     
                     var data = JSON.parse(responseText);
-                    console.log(data);
+                    // console.log(data);
 
                     if(data.resStatus === true)
                     {
@@ -236,7 +248,7 @@
 
         });
         
-        
+        /*
         var dragged;
         document.addEventListener("dragstart", function(event){
             console.log("dragstart");
@@ -257,6 +269,7 @@
             }
         }, false);
 
+
         document.addEventListener('dragover', function(event){
             console.log("dragover");
         });
@@ -268,20 +281,12 @@
             event.target.style.opacity = "";
         }, false);
 
-
-        
-
-
-
         function rotate(rotateTo)
         {
             // alert(rotateTo);
             if (rotateTo == "right") 
             { 
-                /**
-                 * @testing
-                 * [] 
-                 */
+
                 var img = new Image();
                 img.src = document.getElementById('canvas-file-1').value;
                 img.style.transform = 'rotate(90deg)';
@@ -298,6 +303,7 @@
                 document.getElementById('canvas-img-1').style.transform = 'rotate(-90deg)';
             }
         }
+        */
 
         function canvasCloseBtn(test)
         {
@@ -306,7 +312,28 @@
             document.getElementById('canvasContent').removeChild(element);
         }
 
+        jQuery.noConflict();
+        (function( $ ) {
+            $(function() {
+                // More code using $ as alias to jQuery
 
+                /*
+                $('#canvasContent').sortable({
+                    connectWith: ".canvas-contain",
+                    handle: ".canvas-contain",
+                    placeholder: "panel-placeholder",
+                    start: function(e, ui){
+                        ui.placeholder.width(ui.item.find('.canvas-contain').width());
+                        ui.placeholder.height(ui.item.find('.canvas-contain').height());
+                        ui.placeholder.addClass(ui.item.attr("class"));
+                    }
+                });
+                */
+               
+                $('#canvasContent').sortable();
+
+            });
+        })(jQuery);
     </script>
 </body>
 </html>
