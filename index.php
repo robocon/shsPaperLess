@@ -1,66 +1,6 @@
-<?php
-/**
- * เหลืออะไรบ้าง ??
- * [] หน้าแสดงรายการไฟล์ที่อัพโหลด
- * [] หน้าของแพทย์ที่ดึงข้อมูลไปใช้งาน
- */
+<?php 
+require_once 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Bootstrap 4 Example</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-    <style>
-        body {
-            padding-top: 5rem;
-        }
-    </style>
-</head>
-<body>
-    <style>
-    .canvas-contain{
-        position: relative;
-        display: inline-block;
-    }
-    .canvasCloseBtn{
-        /* position: absolute; */
-        /* float: right; */
-        /* top: 0; */
-        /* right: 0; */
-        padding: 3px;
-        background-color: gray;
-        text-align: center;
-    }
-    .canvasCloseBtn:hover{
-        cursor: pointer;
-    }
-
-    .panel-placeholder {
-        border: 1px dotted black;
-        border-radius: 4px;
-        margin: 0 15px 20px 15px;
-        padding: 0;
-        height: 230px;
-        width: 320px;
-    }
-    </style>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">ระบบ Scan เอกสาร</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</nav>
-
 <div class="container-fluid pt-3">
     
     <?php 
@@ -69,7 +9,7 @@
         ?>
         <div class="row">
             <div class="col">
-                <div style="background-color: red;"><?=$_SESSION['notiMessage'];?></div>
+                <div style="alert alert-warning" role="alert"><?=$_SESSION['notiMessage'];?></div>
             </div>
         </div>
         <?php
@@ -84,32 +24,48 @@
                     <video id="video" style="width:800px; height:480px;" autoplay></video>
                 </div>
                 <div class="col">
-                    <button id="snap" type="button" class="btn btn-primary btn-block">ถ่ายรูป</button>
+                    
+                    <div class="d-grid gap-2">
+                        <button id="snap" type="button" class="btn btn-primary">ถ่ายรูป</button>
+                    </div>
+
                 </div>
             </div>
 
             <form action="save.php" method="post" enctype="multipart/form-data">
 
-                <div class="form-group">
-                    <label for="hn">HN:</label>
+                <div class="form-group mb-3">
+                    <label for="hn" class="form-label">HN:</label>
                     <input type="text" class="form-control" name="hn" id="hn"> 
                 </div>
 
                 <div class="form-group">
-                    <label for="dateTreatment">วันที่ทำการรักษา:</label>
+                    <label for="dateTreatment" class="form-label">วันที่ทำการรักษา:</label>
                     <?php 
                     $exDate = date('Y-m-d');
                     ?>
                     <input type="date" class="form-control" name="dateTreatment" id="dateTreatment" value="<?=$exDate;?>">
                 </div>
 
-                <div class="form-group">
-                    <div id="canvasContent" style="background-color:purple"></div>
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <div id="canvasContent" class="row row-cols-4" style="background-color:purple"></div>
+                            <!-- 
+                                https://getbootstrap.com/docs/5.0/components/card/
+                             -->
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">บันทึกข้อมูล</button>
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                        </div>
+                    </div>
                 </div>
+
             </form>
 
         </div>
@@ -204,7 +160,7 @@
             testHTML += '<div class="canvasCloseBtn" onclick="canvasCloseBtn(this)" data-parent="canvas-id-'+i+'"> [ ปิด ] </div>';
             // testHTML += '<div style="float: right;top: 0;right: 0;padding: 3px; cursor: pointer;" onclick="rotate(\'left\')">[LEFT]</div>';
             // testHTML += '<div style="float: right;top: 0;right: 0;padding: 3px; cursor: pointer;" onclick="rotate(\'right\')">[RIGHT]</div>';
-            testHTML += '<div><img src="" id="canvas-img-'+i+'"></div>';
+            testHTML += '<div style="text-align: center;"><img src="" id="canvas-img-'+i+'"></div>';
             testHTML += '<input type="hidden" name="canvasValue[]" id="canvas-file-'+i+'" value="">';
             testHTML += '</div>';
             document.getElementById('canvasContent').innerHTML += testHTML;
@@ -335,5 +291,6 @@
             });
         })(jQuery);
     </script>
-</body>
-</html>
+<?php 
+require_once 'footer.php';
+?>
