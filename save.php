@@ -68,7 +68,7 @@ foreach ($_REQUEST['canvasValue'] as $key => $value)
 
 // อ่านบาร์โค้ดออกมา
 $decoder = new PHPZxingDecoder();
-$decoder->setJavaPath($javaFullPath);
+$decoder->setJavaPath(javaFullPath);
 $decodedArray = $decoder->decode($jpegTemp);
 if( is_array($decodedArray) )
 {
@@ -112,11 +112,11 @@ $pdfName = generateRandomString();
 $pdfPathFile = "$defaultTmPath/$pdfName.pdf";
 $pdf->Output("F", $pdfPathFile);
 
-$sql = "INSERT INTO `pdfs` (`id`, `dateSave`, `dateTM`, `file`, `creator`, `lastSave`, `editor`) VALUES ( NULL, NOW(), ?, ?, '', NOW(), '' );";
+$sql = "INSERT INTO `pdfs` (`id`, `dateSave`, `dateTM`, `hn`, `file`, `creator`, `lastSave`, `editor`) VALUES ( NULL, NOW(), ?, ?, ?, '', NOW(), '' );";
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("ss", $v1, $v2);
-$v1 = $dateTM;
-$v2 = $pdfPathFile;
+$stmt->bind_param("sss", $dateTM, $hn, $pdfPathFile);
+// $v1 = $dateTM;
+// $v2 = $pdfPathFile;
 $stmt->execute();
 $last_id = $mysqli->insert_id;
 $stmt->close();

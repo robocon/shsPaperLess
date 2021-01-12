@@ -68,7 +68,7 @@
                     <a class="nav-link" aria-current="page" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">จัดการข้อมูล</a>
+                    <a class="nav-link" href="pageManage.php">จัดการข้อมูล</a>
                 </li>
             </ul>
         </div>

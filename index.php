@@ -1,4 +1,5 @@
 <?php 
+session_start();
 require_once 'header.php';
 ?>
 <div class="container-fluid pt-3">
@@ -50,7 +51,7 @@ require_once 'header.php';
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col">
-                            <div id="canvasContent" class="row row-cols-4" style="background-color:purple"></div>
+                            <div id="canvasContent" class="row row-cols-auto" style="background-color:purple"></div>
                             <!-- 
                                 https://getbootstrap.com/docs/5.0/components/card/
                              -->
