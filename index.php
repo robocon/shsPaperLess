@@ -3,29 +3,20 @@ session_start();
 require_once 'header.php';
 ?>
 <div class="container-fluid pt-3">
-    
-    <?php 
-    if ($_SESSION['notiMessage'])
-    {
-        ?>
-        <div class="row">
-            <div class="col">
-                <div style="alert alert-warning" role="alert"><?=$_SESSION['notiMessage'];?></div>
-            </div>
-        </div>
-        <?php
-    }
-    ?>
-
     <div class="row">
         <div class="col">
 
             <div class="row">
                 <div class="col">
                     <video id="video" style="width:800px; height:480px;" autoplay></video>
+
+                    <div class="alert alert-danger align-items-center" role="alert" id="videoNotify" style="display: none;">
+                    กรุณาติดตั้งกล้อง Webcam ก่อนใช้งาน
+                    </div>
+
                 </div>
                 <div class="col">
-                    
+
                     <div class="d-grid gap-2">
                         <button id="snap" type="button" class="btn btn-primary">ถ่ายรูป</button>
                     </div>
@@ -151,6 +142,8 @@ require_once 'header.php';
 
         function handleError(error) {
             console.error("Error: ", error);
+            document.getElementById('video').style.display = 'none';
+            document.getElementById('videoNotify').style.display = '';
         }
 
         var i = 1;
@@ -192,10 +185,7 @@ require_once 'header.php';
                 "findHn.php",
                 {"dataIMG" : dataURL},
                 function(responseText){
-                    
                     var data = JSON.parse(responseText);
-                    // console.log(data);
-
                     if(data.resStatus === true)
                     {
                         document.getElementById('hn').value = data.hn;

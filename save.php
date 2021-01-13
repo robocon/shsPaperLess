@@ -1,4 +1,5 @@
 <?php 
+session_start();
 require __DIR__ . "/vendor/autoload.php";
 include "connection.php";
 include "fpdf182/fpdf.php";
@@ -13,7 +14,8 @@ $dateTM = filter_input(INPUT_POST, 'dateTreatment', FILTER_SANITIZE_STRING);
 
 if ( empty($hn) || empty($dateTM) )
 {
-    echo "กรุณากรอกข้อมูล HN และ วันที่ทำการรักษา ให้ครบ";
+    $_SESSION['notiMessage'] = "กรุณากรอกข้อมูล HN และ วันที่ทำการรักษา ให้ครบ";
+    header("Location: index.php");
     exit;
 }
 
