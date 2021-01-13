@@ -10,11 +10,19 @@ require_once 'header.php';
         </div>
     </div>
     <div>
+        <?php 
+        $currDateTm = date('Y-m-d');
+        if($_POST['dateTM'])
+        {
+            $currDateTm = $_POST['dateTM'];
+        }
+        
+        ?>
         <form action="pageManage.php" method="post">
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="dateTM" class="form-label">เลือกวันที่รักษา</label>
-                    <input type="date" name="dateTM" class="form-control" id="dateTM" aria-describedby="emailHelp">
+                    <input type="date" name="dateTM" class="form-control" id="dateTM" aria-describedby="emailHelp" value="<?=$currDateTm;?>">
                 </div>
             </div>
             <div class="row mb-3">
@@ -63,7 +71,11 @@ require_once 'header.php';
                             <?php 
                             if( preg_match('/(\/\w+\.pdf)/', $item['file'], $matchs) > 0)
                             {
-                                echo '<a href="'.HOST.$item['file'].'">'.$matchs[1].'</a>';
+                                // echo '<a href="'.HOST.$item['file'].'">'.$matchs[1].'</a>';
+
+                                
+
+                                echo '<a href="javascript:void(0)" file-data="'.hostPdfFile.$item['file'].'" data-bs-toggle="modal" data-bs-target="#exampleModal">'.$matchs[1].'</a>';
                             }
                             ?>
                             </td>
@@ -82,11 +94,36 @@ require_once 'header.php';
                     ?>
                 </tbody>
             </table>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">ตัวอย่างไฟล์</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <script>
             function notiConfirm()
             {
                 return confirm("ยืนยันที่จะลบข้อมูลหรือไม่?");
             }
+
+            var myModalEl = document.getElementById('exampleModal')
+            myModalEl.addEventListener('show.bs.modal', function (event) {
+                var mo = event.relatedTarget.getAttribute('file-data');
+                var iframeData = '<iframe src="'+mo+'" style="width:100%; height:100%;" frameborder="0">กรุณาติดตั้ง Adobe PDF Reader ก่อนใช้งาน</iframe>';
+                var modalBodyInput = myModalEl.querySelector('.modal-body');
+                modalBodyInput.innerHTML = iframeData;
+            })
+
             </script>
             <?php
         }
