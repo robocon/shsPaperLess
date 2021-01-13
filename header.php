@@ -38,7 +38,6 @@
     .canvasCloseBtn:hover{
         cursor: pointer;
     }
-
     .panel-placeholder {
         border: 1px dotted black;
         border-radius: 4px;
@@ -48,34 +47,39 @@
         width: 320px;
     }
     </style>
+    <!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top"> -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #3a581a;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ระบบ Scan เอกสาร</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pageManage.php">จัดการข้อมูล</a>
+                    </li>
+                </ul>
+            </div>
 
-
-
-<?php 
-
-?>
-<!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top"> -->
-<nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #3a581a;">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">ระบบ Scan เอกสาร</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pageManage.php">จัดการข้อมูล</a>
-                </li>
-            </ul>
         </div>
-
-    </div>
-</nav>
-
-<?php 
-
-?>
+    </nav>
+    <?php 
+    if($_SESSION['notiMessage'])
+    {
+        ?>
+        <div class="container-fluid pt-3">
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-warning" role="alert"><?=$_SESSION['notiMessage'];?></div>
+            </div>
+        </div>
+        </div>
+        <?php
+        $_SESSION['notiMessage'] = NULL;
+    }
+    ?>

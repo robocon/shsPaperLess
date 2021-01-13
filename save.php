@@ -112,7 +112,7 @@ $pdfName = generateRandomString();
 $pdfPathFile = "$defaultTmPath/$pdfName.pdf";
 $pdf->Output("F", $pdfPathFile);
 
-$sql = "INSERT INTO `pdfs` (`id`, `dateSave`, `dateTM`, `hn`, `file`, `creator`, `lastSave`, `editor`) VALUES ( NULL, NOW(), ?, ?, ?, '', NOW(), '' );";
+$sql = "INSERT INTO `pdfs` (`id`, `dateSave`, `dateTM`, `hn`, `file`, `creator`, `lastSave`, `editor`, `status`) VALUES ( NULL, NOW(), ?, ?, ?, '', NOW(), '', 1);";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("sss", $dateTM, $hn, $pdfPathFile);
 // $v1 = $dateTM;
