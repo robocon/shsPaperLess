@@ -39,7 +39,7 @@ require_once 'header.php';
     if ($action==='show')
     {
         $dateTM = filter_input(INPUT_POST, 'dateTM', FILTER_SANITIZE_STRING);
-        $sql = "SELECT * FROM `pdfs` WHERE `dateTM` = '$dateTM' AND `status` = 1 ORDER BY `id` LIMIT 0, 100";
+        $sql = "SELECT * FROM `test_pdf` WHERE `dateTM` = '$dateTM' AND `status` = 1 ORDER BY `id` LIMIT 0, 100";
         $q = $mysqli->query($sql);
         if ($q->num_rows > 0)
         {
@@ -73,9 +73,7 @@ require_once 'header.php';
                             {
                                 // echo '<a href="'.HOST.$item['file'].'">'.$matchs[1].'</a>';
 
-                                
-
-                                echo '<a href="javascript:void(0)" file-data="'.hostPdfFile.$item['file'].'" data-bs-toggle="modal" data-bs-target="#exampleModal">'.$matchs[1].'</a>';
+                                echo '<a href="javascript:void(0)" file-data="'.$item['file'].'" data-bs-toggle="modal" data-bs-target="#exampleModal">'.$matchs[1].'</a>';
                             }
                             ?>
                             </td>
